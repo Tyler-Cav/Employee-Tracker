@@ -22,7 +22,6 @@ function mainMenu () {
                 console.log("Thank you, Goodbye")
             } else {
             selection(response)
-            (mainMenu())
             }
         })
 }
@@ -31,13 +30,9 @@ mainMenu()
 
 async function selection(response) {
     if (response.menuSelection === 'view all departments') {
-        db.query('SELECT * FROM department', function (err, results) {
-            console.log(results);
-          });
+        viewDepartments()
     } else if (response.menuSelection === 'view all roles') {
-        db.query('SELECT title, salary FROM role', function (err, results) {
-            console.log(results);
-          });
+        viewAllRoles()
     } else if (response.menuSelection === 'view all employees') {
         //TODO NEED TO JOIN ADDITIONAL DATA FROM OTHER TABLES
         db.query('SELECT * FROM employee', function (err, results) {
@@ -54,8 +49,17 @@ async function selection(response) {
     }
 }
 
+async function viewDepartments() {
+    const depts = await db.query('SELECT * FROM department;')
+    console.table(depts)
+    mainMenu()
+}
 
-
+async function viewAllRoles() {
+    const roles = await db.query('SELECT title, salary FROM role;')
+    console.table(roles)
+    mainMenu()
+}
 // WHEN I choose to view all employees
 // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 // WHEN I choose to add a department
