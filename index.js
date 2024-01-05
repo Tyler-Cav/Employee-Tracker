@@ -28,16 +28,13 @@ function mainMenu () {
 
 mainMenu()
 
-async function selection(response) {
+function selection(response) {
     if (response.menuSelection === 'view all departments') {
         viewDepartments()
     } else if (response.menuSelection === 'view all roles') {
         viewAllRoles()
     } else if (response.menuSelection === 'view all employees') {
-        //TODO NEED TO JOIN ADDITIONAL DATA FROM OTHER TABLES
-        db.query('SELECT * FROM employee', function (err, results) {
-            console.log(results);
-          });
+        viewallEmployees()
     } else if (response.menuSelection === 'add a department') {
         console.log('add a department')
     } else if (response.menuSelection === 'add a role') {
@@ -60,8 +57,16 @@ async function viewAllRoles() {
     console.table(roles)
     mainMenu()
 }
+
+async function viewallEmployees() {
+    const employees = await db.query('SELECT * FROM employee;')
+    console.table(employees)
+    mainMenu()
+}
 // WHEN I choose to view all employees
-// THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+// THEN I am presented with a formatted table showing employee data, including employee ids, first names, 
+        //last names, job titles, departments, salaries, 
+        //and managers that the employees report to
 // WHEN I choose to add a department
 // THEN I am prompted to enter the name of the department and that department is added to the database
 // WHEN I choose to add a role
