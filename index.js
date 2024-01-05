@@ -82,24 +82,38 @@ async function addDepartment() {
 }
 
 async function addRole() {
+    db.query('SELECT Department_Name FROM department')
+        .then(result => {
+        const choices = result.map(row => row.Department_Name);
     inquirer
         .prompt([ 
             {
                 type: 'input',
-                message: 'Please enter the department you would like to add',
-                name: 'deptAdd',
+                message: 'Please enter the title of the role',
+                name: 'titleAdd',
+            },
+            {
+                type: 'input',
+                message: 'Please enter the yearly salary. Please exclude any currency symbol or commas.',
+                name: 'salaryAdd'
+            },
+            {
+                type: 'list',
+                message: 'Please select the department',
+                choices: choices,
+                name: 'deptSelection',
             }
         ])
         .then(response => {
-            let newDept = JSON.stringify(response.deptAdd);
-            db.query(`INSERT INTO department (Department_Name) VALUES(${newDept})`)
+            let newTitle = JSON.stringify(response.titleAdd)
+            let newSalary = response.salaryAdd
+            let deptChoice = JSON.stringify(response.deptSelection)
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES(${newTitle}), ${newSalary}, ${deptChoice}`)
             .then(mainMenu())
         })
-}
+})}
 
 
-// WHEN I choose to add a role
-// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
 // WHEN I choose to add an employee
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 // WHEN I choose to update an employee role
