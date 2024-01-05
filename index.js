@@ -37,8 +37,9 @@ function selection(response) {
         viewallEmployees()
     } else if (response.menuSelection === 'add a department') {
         console.log('add a department')
+        addDepartment()
     } else if (response.menuSelection === 'add a role') {
-        console.log('add a role')
+        addRole()
     } else if (response.menuSelection === 'add an employee') {
         console.log('add an employee')
     } else if (response.menuSelection === 'Update an employee role') {
@@ -59,16 +60,44 @@ async function viewAllRoles() {
 }
 
 async function viewallEmployees() {
-    const employees = await db.query('SELECT * FROM employee;')
+    const employees = await db.query('SELECT role.id, first_name, last_name, title, Department_Name, salary, manager_id FROM role INNER JOIN employee ON employee.id = role.id INNER JOIN department ON department.id = role.department_id')
     console.table(employees)
     mainMenu()
 }
-// WHEN I choose to view all employees
-// THEN I am presented with a formatted table showing employee data, including employee ids, first names, 
-        //last names, job titles, departments, salaries, 
-        //and managers that the employees report to
-// WHEN I choose to add a department
-// THEN I am prompted to enter the name of the department and that department is added to the database
+
+async function addDepartment() {
+    inquirer
+        .prompt([ 
+            {
+                type: 'input',
+                message: 'Please enter the department you would like to add',
+                name: 'deptAdd',
+            }
+        ])
+        .then(response => {
+            let newDept = JSON.stringify(response.deptAdd);
+            db.query(`INSERT INTO department (Department_Name) VALUES(${newDept})`)
+            .then(mainMenu())
+        })
+}
+
+async function addRole() {
+    inquirer
+        .prompt([ 
+            {
+                type: 'input',
+                message: 'Please enter the department you would like to add',
+                name: 'deptAdd',
+            }
+        ])
+        .then(response => {
+            let newDept = JSON.stringify(response.deptAdd);
+            db.query(`INSERT INTO department (Department_Name) VALUES(${newDept})`)
+            .then(mainMenu())
+        })
+}
+
+
 // WHEN I choose to add a role
 // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
 // WHEN I choose to add an employee
